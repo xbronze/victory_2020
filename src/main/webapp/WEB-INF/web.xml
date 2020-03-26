@@ -1,0 +1,63 @@
+<!DOCTYPE web-app PUBLIC
+ "-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN"
+ "http://java.sun.com/dtd/web-app_2_3.dtd" >
+
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xmlns="http://java.sun.com/xml/ns/javaee"
+          xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
+          id="WebApp_ID" version="2.5">
+
+  <display-name>Archetype Created Web Application</display-name>
+
+  <!-- 集成Spring框架 -->
+  <context-param>
+    <param-name>contextConfigLocation</param-name>
+    <param-value>classpath*:spring/dispatcher-*.xml</param-value>
+  </context-param>
+  <listener>
+    <!-- 在项目启动前初始化当前web应用环境 -->
+    <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+  </listener>
+
+  <filter>
+    <filter-name>characterEncodingFilter</filter-name>
+    <filter-class>org.springframework.web.filter.CharacterEncodingFilter</filter-class>
+    <init-param>
+      <param-name>encoding</param-name>
+      <param-value>UTF-8</param-value>
+    </init-param>
+    <init-param>
+      <param-name>forceEncoding</param-name>
+      <param-value>true</param-value>
+    </init-param>
+  </filter>
+  <filter-mapping>
+    <filter-name>characterEncodingFilter</filter-name>
+    <url-pattern>/*</url-pattern>
+  </filter-mapping>
+  
+  <servlet>
+    <!--向服务器注册前端控制器！  -->
+    <servlet-name>dispatcher</servlet-name>
+    <!--DispatcherServlet指的是SpringMVC的前端控制器！,给服务器使用，创建servlet对象！  -->
+    <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+    <init-param>
+      <param-name>contextConfigLocation</param-name>
+      <param-value>classpath:spring/dispatcher-servlet.xml</param-value>
+    </init-param>
+    <!-- 数字0或者大于0的数字表示的是：在服务器启动的时候创建Servlet对象，而不是第一次访问的时候创建
+                小于0的数字指的是：在第一次访问的时候创建Servlet对象.
+                在数字大于O的情况下，数字越小，优先级越高！
+             -->
+    <load-on-startup>1</load-on-startup>
+
+  </servlet>
+
+  <servlet-mapping>
+    <!-- 用 servlet-mapping指定请求映射的路径-->
+    <servlet-name>dispatcher</servlet-name>
+    <!-- 用url-pattern指定拦截 的请求路径！ -->
+    <url-pattern>*.do</url-pattern>
+  </servlet-mapping>
+
+</web-app>

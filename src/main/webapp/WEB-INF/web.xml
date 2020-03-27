@@ -12,8 +12,13 @@
   <!-- 集成Spring框架 -->
   <context-param>
     <param-name>contextConfigLocation</param-name>
-    <param-value>classpath*:spring/dispatcher-*.xml</param-value>
+    <param-value>classpath:applicationContext.xml</param-value>
   </context-param>
+
+  <listener>
+    <listener-class>org.springframework.web.context.request.RequestContextListener</listener-class>
+  </listener>
+
   <listener>
     <!-- 在项目启动前初始化当前web应用环境 -->
     <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>

@@ -1,10 +1,14 @@
 package com.victory2020.dao;
 
 import com.victory2020.pojo.User;
+import org.apache.ibatis.annotations.Param;
+
 
 public interface UserMapper {
 
     int checkUsername(String username);
+
+    User selectLogin (@Param("username") String username, @Param("password") String password);
 
     int deleteByPrimaryKey(Integer id);
 
@@ -17,4 +21,5 @@ public interface UserMapper {
     int updateByPrimaryKeySelective(User record);
 
     int updateByPrimaryKey(User record);
+
 }

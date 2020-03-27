@@ -23,6 +23,11 @@
     select count(1) from mmall_user where username = #{username}
   </select>
 
+  <select id="selectLogin" parameterType="map" resultMap="BaseResultMap">
+    SELECT <include refid="Base_Column_List" /> FROM mmall_user
+    WHERE username = #{username} AND password = #{password}
+  </select>
+
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />

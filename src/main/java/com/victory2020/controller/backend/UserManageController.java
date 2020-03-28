@@ -5,12 +5,12 @@ import com.victory2020.common.ServerResponse;
 import com.victory2020.pojo.User;
 import com.victory2020.service.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpSession;
 
-@RestController
+@Controller
 @RequestMapping("/manage/user")
 public class UserManageController {
 

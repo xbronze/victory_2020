@@ -199,6 +199,15 @@
       <version>2.3</version>
     </dependency>
 
+    <!-- ftpclient -->
+    <!-- https://mvnrepository.com/artifact/commons-net/commons-net -->
+    <dependency>
+      <groupId>commons-net</groupId>
+      <artifactId>commons-net</artifactId>
+      <version>3.6</version>
+    </dependency>
+
+
   </dependencies>
 
   <build>

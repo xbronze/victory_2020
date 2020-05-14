@@ -58,8 +58,8 @@ public class FTPUtil {
                 uploaded = false;
                 e.printStackTrace();
             } finally {
-                fis.close();
-                ftpClient.disconnect();
+                fis.close(); //关闭流
+                ftpClient.disconnect(); //释放连接
             }
         }
         return uploaded;

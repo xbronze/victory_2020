@@ -97,9 +97,16 @@ public class ProductManageController {
         }
     }
 
+    /**
+     * 获取产品列表
+     * @param pageNum
+     * @param pageSize
+     * @param session
+     * @return
+     */
     @RequestMapping("get_product_list.do")
     @ResponseBody
-    public ServerResponse getProductList(@RequestParam(value = "pageNum", defaultValue = "0") int pageNum,
+    public ServerResponse getProductList(@RequestParam(value = "pageNum", defaultValue = "1") int pageNum,
         @RequestParam(value = "pageSize",defaultValue = "10") int pageSize, HttpSession session){
         ServerResponse<User> response = (ServerResponse<User>) session.getAttribute(Const.CURRENT_USER);
         if(response == null || response.getData() == null){
@@ -112,6 +119,15 @@ public class ProductManageController {
         }
     }
 
+    /**
+     * 商品搜索
+     * @param session
+     * @param productName
+     * @param productId
+     * @param pageNum
+     * @param pageSize
+     * @return
+     */
     @RequestMapping("search_product.do")
     @ResponseBody
     public ServerResponse productSearch(HttpSession session,String productName,Integer productId,

@@ -16,7 +16,7 @@ public class FileServiceImpl implements IFileService {
     @Override
     public String upload(MultipartFile file, String path) {
         String fileName = file.getOriginalFilename();
-        String fileExtensionName = fileName.substring(fileName.lastIndexOf(".") + 1);
+        String fileExtensionName = fileName.substring(fileName.lastIndexOf(".") + 1); //后的上传文件的拓展名
         String uploadFileName = UUID.randomUUID().toString() + "." + fileExtensionName;
 
         //TODO 改成logger日志记录

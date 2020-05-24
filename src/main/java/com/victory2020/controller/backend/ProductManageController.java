@@ -143,16 +143,16 @@ public class ProductManageController {
         }
     }
 
-    @RequestMapping("update_product.do")
+    @RequestMapping("upload.do")
     @ResponseBody
-    public ServerResponse updateProduct(@RequestParam(value = "update_file", required = false) MultipartFile file,
+    public ServerResponse upload(@RequestParam(value = "upload_file", required = false) MultipartFile file,
                                         HttpServletRequest request, HttpSession session){
         ServerResponse<User> response = (ServerResponse<User>) session.getAttribute(Const.CURRENT_USER);
         if(response == null || response.getData() == null){
             return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(), "用户未登录，请登陆管理员用户");
         }
         if (iUserService.checkAdminRole(response.getData()).isSuccess()){
-            String path = request.getSession().getServletContext().getRealPath("update");
+            String path = request.getSession().getServletContext().getRealPath("upload");
             String targetFileName = iFileService.upload(file, path);
             String url = PropertiesUtil.getProperty("ftp.server.http.prefix") + targetFileName;
 

@@ -147,7 +147,7 @@ public class UserServiceImpl implements IUserService {
             return ServerResponse.createByErrorMessage("旧密码错误");
         }
 
-        user.setPassword(passwordByMD5);
+        user.setPassword(MD5Util.MD5EncodeUtf8(passwordNew)); //把新密码替换到用户信息中，并在后面更新用户信息
         int updateCount = userMapper.updateByPrimaryKeySelective(user);
         if(updateCount > 0){
             return ServerResponse.createBySuccessMessage("密码更新成功");

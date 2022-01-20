@@ -5,6 +5,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.List;
 import org.apache.commons.net.ftp.FTPClient;
+import org.apache.commons.net.ftp.FTPReply;
 
 public class FTPUtil {
 
@@ -12,11 +13,14 @@ public class FTPUtil {
     private int port;
     private String user;
     private String pwd;
-    private FTPClient ftpClient;
+    private static FTPClient ftpClient;
+    public static FileInputStream fis;
 
-    private static String ftpIp = PropertiesUtil.getProperty("ftp.server.ip");
+    private static String ftpIp = PropertiesUtil.getProperty("ftp.ip");
+    private static String ftpPort = PropertiesUtil.getProperty("ftp.port");
     private static String ftpUser = PropertiesUtil.getProperty("ftp.user");
     private static String ftpPass = PropertiesUtil.getProperty("ftp.pass");
+    private static String ftpPath = PropertiesUtil.getProperty("ftp.path");
 
     public FTPUtil(String ip,int port,String user,String pwd){
         this.ip = ip;
@@ -25,60 +29,58 @@ public class FTPUtil {
         this.pwd = pwd;
     }
     public static boolean uploadFile(List<File> fileList) throws IOException {
-        FTPUtil ftpUtil = new FTPUtil(ftpIp,21,ftpUser,ftpPass);
+        FTPUtil ftpUtil = new FTPUtil(ftpIp, Integer.valueOf(ftpPort), ftpUser, ftpPass);
 
         //TODO 改成logger日志记录
         System.out.println("开始连接ftp服务器");
-        boolean result = ftpUtil.uploadFile("img",fileList);
+        boolean result = true;
+        try {
+            result = ftpUtil.uploadFile(ftpPath, fileList);
+        } catch (IOException e) {
+            //TODO 改成logger日志记录
+            result = false;
+            System.out.println("上传文件异常:" + e.getMessage());
+            e.printStackTrace();
+        } finally {
+            if(fis != null)
+                fis.close();
+            if(ftpClient != null)
+                ftpClient.disconnect();
+        }
         //TODO 改成logger日志记录
-        System.out.println("开始连接ftp服务器,结束上传,上传结果:【" + result + "】");
+        System.out.println("结束上传,上传结果:【" + result + "】");
         return result;
     }
 
 
     private boolean uploadFile(String remotePath,List<File> fileList) throws IOException {
-        boolean uploaded = true;
-        FileInputStream fis = null;
         //连接FTP服务器
-        if(connectServer(this.ip,this.port,this.user,this.pwd)){
-            try {
-                ftpClient.changeWorkingDirectory(remotePath);
-                ftpClient.setBufferSize(1024);
-                ftpClient.setControlEncoding("UTF-8");
-                ftpClient.setFileType(FTPClient.BINARY_FILE_TYPE);
-                ftpClient.enterLocalPassiveMode();
-                for(File fileItem : fileList){
-                    fis = new FileInputStream(fileItem);
-                    ftpClient.storeFile(fileItem.getName(),fis);
-                }
-
-            } catch (IOException e) {
-                //TODO 改成logger日志记录
-                System.out.println("上传文件异常:" + e.getMessage());
-                uploaded = false;
-                e.printStackTrace();
-            } finally {
-                fis.close(); //关闭流
-                ftpClient.disconnect(); //释放连接
+        if(connectFtpServer(this.ip, this.port, this.user, this.pwd)){
+            ftpClient.changeWorkingDirectory(remotePath);
+            ftpClient.enterLocalPassiveMode();
+            for(File fileItem : fileList){
+                fis = new FileInputStream(fileItem);
+                ftpClient.storeFile(fileItem.getName(),fis);
             }
         }
-        return uploaded;
+        return true;
     }
 
-
-
-    private boolean connectServer(String ip,int port,String user,String pwd){
-
-        boolean isSuccess = false;
+    private boolean connectFtpServer(String ip,int port,String user,String pwd) throws IOException {
         ftpClient = new FTPClient();
-        try {
-            ftpClient.connect(ip);
-            isSuccess = ftpClient.login(user,pwd);
-        } catch (IOException e) {
-            //TODO 改成logger日志记录
-            System.out.println("连接FTP服务器异常:" + e.getMessage());
+        ftpClient.connect(ip, port);
+        ftpClient.login(user, pwd);
+        ftpClient.setConnectTimeout(5000);
+        ftpClient.setControlEncoding("UTF-8");
+        ftpClient.setBufferSize(1024);
+        ftpClient.setFileType(FTPClient.BINARY_FILE_TYPE);
+        if (!FTPReply.isPositiveCompletion(ftpClient.getReplyCode())) {
+            System.out.println("未连接到FTP，用户名或密码错误");
+            ftpClient.disconnect();
+            return false;
         }
-        return isSuccess;
+        return true;
+
     }
 
 
